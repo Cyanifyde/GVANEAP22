@@ -2,7 +2,7 @@ import pygame
 import random
 pygame.init()
 pygame.display.set_caption('NEA')
-screen = pygame.display.set_mode([0,0],pygame.FULLSCREEN)
+screen = pygame.display.set_mode([0,0],pygame.FULLSCREEN) #pygame.FULLSCREEN is a flag that allows the game to be put into fullscreen mode
 clock = pygame.time.Clock()
 size=screen.get_size()
 from threading import Thread
@@ -11,42 +11,41 @@ import time
 import string
 alphabet = list(string.ascii_lowercase)
 
-class people_set:
+class people_set: #a class to hold and controll the "person" class
     def __init__(self):
-        self.people_list=[]
-        self.moveing_list=[]
-    def summon_person(self):
-        num=random.randint(0,len(house_list.houses)-1)
-        x=list(house_list.houses.keys())[num]
-        new_p=person(x,len(self.people_list))
-        self.people_list.append(new_p)
-    def move_person(self):
-        if len(self.people_list)>=1:
+        self.people_list=[] #a list of all people in existance
+        self.moveing_list=[] #a list of all people currently in motion
+    def summon_person(self):# function to be called when a person is being created
+        x=list(house_list.houses.keys())[random.randint(0,len(house_list.houses)-1)] # picks a random house for their initial house to be set at
+        new_p=person(x,len(self.people_list)) #creates the person
+        self.people_list.append(new_p) # adds that person to a list of people
+    def move_person(self): # picks a random person in the list of all people and asign them a house to go to
+        if len(self.people_list)>=1: # makes sure there is at least 1 person before chosing someone or it will throw errors
             num=random.randint(0,len(self.people_list)-1)
             persons=self.people_list[num]
             if persons not in self.moveing_list:
                 self.moveing_list.append(persons)
                 running=True
-                while running==True:
+                while running==True: # makes sure the house for destination is not the same one as the current location
                     num=random.randint(0,len(house_list.houses)-1)
                     x=list(house_list.houses.keys())[num]
                     if x !=persons.loc:
                         persons.dest=x
                         running=False
 
-class person:
+class person: #person class for holding and controlling all neccessry code for them to function
     def __init__(self,loc,tag):
         self.loc=loc
         self.tag=tag
         self.house=loc
         self.dest=None
         self.infected=False 
-        self.coords=[[-1,0],[0,-1],[0,1],[1,0]]
+        self.coords=[[-1,0],[0,-1],[0,1],[1,0]] # coordinates of all possible movement vectors
         self.home=False
-    def dist(self,x,y):
+    def dist(self,x,y): # gets the distance between 2 points
         return (x[0]-y[0])**2+(x[1]-y[1])**2
         
-    def move(self):
+    def move(self): #gets the distance from the end to itself and sees what vector from self.coords would be more beneficial
         lowest_dist=self.dist(self.loc,self.dest)
         if lowest_dist==0:
             self.home=True
@@ -59,12 +58,20 @@ class person:
                 lowest=new_loc
         self.loc=lowest
 
-    def draw(self):
+    def draw(self): #draws the circle on the screen
         pygame.draw.circle(screen, "orange", self.loc, 2, 0)
 
-class keys:
+class keys: # a class to control all functions to update change and use keybinds
     def __init__(self):
-        self.all_keys={"q":pygame.K_q,"w":pygame.K_w,"e":pygame.K_e,"r":pygame.K_r,"t":pygame.K_t,"y":pygame.K_y,"u":pygame.K_u,"i":pygame.K_i,"o":pygame.K_o,"p":pygame.K_p,"a":pygame.K_a,"s":pygame.K_s,"d":pygame.K_d,"f":pygame.K_f,"g":pygame.K_g,"h":pygame.K_h,"j":pygame.K_j,"k":pygame.K_k,"l":pygame.K_l,"z":pygame.K_z,"x":pygame.K_x,"c":pygame.K_c,"v":pygame.K_v,"b":pygame.K_b,"n":pygame.K_n,"m":pygame.K_m,}
+        self.all_keys={
+            "q":pygame.K_q,"w":pygame.K_w,"e":pygame.K_e,"r":pygame.K_r,
+            "t":pygame.K_t,"y":pygame.K_y,"u":pygame.K_u,"i":pygame.K_i,
+            "o":pygame.K_o,"p":pygame.K_p,"a":pygame.K_a,"s":pygame.K_s,
+            "d":pygame.K_d,"f":pygame.K_f,"g":pygame.K_g,"h":pygame.K_h,
+            "j":pygame.K_j,"k":pygame.K_k,"l":pygame.K_l,"z":pygame.K_z,
+            "x":pygame.K_x,"c":pygame.K_c,"v":pygame.K_v,"b":pygame.K_b,
+            "n":pygame.K_n,"m":pygame.K_m
+        } # a dictionary to hold and compare all possible keyboard inputs I want
         self.default_keybinds={
             "save":["s",pygame.K_s],
             "summon_house":["q",pygame.K_q],
@@ -77,45 +84,42 @@ class keys:
             "menu":["m",pygame.K_m],
             "camera_mode_change":["c",pygame.K_c],
             "pause":["p",pygame.K_p]
-        }
-        self.get_keys_set()
-    def get_keys_set(self):
+        } # a dictionary to hold all the default keybinds.
+        self.get_keys_set() 
+    def get_keys_set(self): # sets gets all currently used keybinds to self.current to be used
         self.current=[]
         for x in self.default_keybinds:
             self.current.append(self.default_keybinds[x][1])
 
 key_group=keys()
-gui_font = pygame.font.Font(None,30)
-class Button:
+gui_font = pygame.font.Font(None,30)# sets the UI font and size
+class Button:# a class for holding all button related code and function
     def __init__(self,text,width,height,x,y,function=None,box=True,arg=None): 
 
         if box==True:
             self.text_colour="#0A0908"
         else:
             self.text_colour="#FFFFFF"
-        self.function=function
-        self.pressed = False
-        self.pos=[x,y]
-        self.rect = pygame.Rect([x,y],(width,height))
+        self.function=function # if the button on press needs to run a function, it needs to be passed into here
+        self.pressed = False # bool to say if the button is pressed
+        self.pos=[x,y] # records where it is in the screen (from 0,0)
+        self.rect = pygame.Rect([x,y],(width,height))  # creates a pygame rect object
         self.rect.center=[x,y]
         self.colour = '#40C9A2'
         self.text = text
         self.text_surface = gui_font.render(text,True,self.text_colour)
         self.text_rect = self.text_surface.get_rect(center = self.rect.center)
-        self.box=box
-        self.arg=arg
+        self.box=box # a true or false to say whether the button will be rendered or not
+        self.arg=arg # if some details need to be passed int the function, it is done here
 
     def change_text(self,text):
         self.text=text
         self.text_surface=gui_font.render(text,True,self.text_colour)
         self.text_rect = self.text_surface.get_rect(center = self.rect.center)
 
-    def draw_box(self):
-        pygame.draw.rect(screen,self.colour, self.rect)
-
     def draw(self):
         if self.box==True:
-            self.draw_box()
+            pygame.draw.rect(screen,self.colour, self.rect)
         screen.blit(self.text_surface, self.text_rect)
         if self.box!=True:
             self.check_click()
