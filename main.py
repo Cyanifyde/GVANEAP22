@@ -112,22 +112,22 @@ class Button:# a class for holding all button related code and function
         self.box=box # a true or false to say whether the button will be rendered or not
         self.arg=arg # if some details need to be passed int the function, it is done here
 
-    def change_text(self,text):
+    def change_text(self,text):# changes the text on the button
         self.text=text
         self.text_surface=gui_font.render(text,True,self.text_colour)
         self.text_rect = self.text_surface.get_rect(center = self.rect.center)
 
-    def draw(self):
+    def draw(self):#draws the button and the text
         if self.box==True:
             pygame.draw.rect(screen,self.colour, self.rect)
         screen.blit(self.text_surface, self.text_rect)
         if self.box!=True:
             self.check_click()
 
-    def check_click(self):
+    def check_click(self):# cheks if the button is pressed, if it is it returns true and runs a functon
         mouse_pos = pygame.mouse.get_pos()
         if self.rect.collidepoint(mouse_pos):
-            self.colour = '#e5f9e0'
+            self.colour = '#e5f9e0' # actuve colour
             if pygame.mouse.get_pressed()[0]:
                 self.pressed = True
                 return True
@@ -137,11 +137,10 @@ class Button:# a class for holding all button related code and function
                     self.function(self)
                 return False
         else:
-            self.colour = '#40C9A2'
+            self.colour = '#40C9A2' # non active colour
             return False
 
 class scene_1_set:
-
     def __init__(self) -> None:
         self.buttons=[]
     def setup(self):
