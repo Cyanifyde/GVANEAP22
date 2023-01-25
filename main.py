@@ -210,7 +210,7 @@ class scene_2_set:
         for x in self.buttons:
             x.draw()
 
-class scene_3_set():
+class scene_3_set:
 
     def __init__(self):
         self.buttons=[]
