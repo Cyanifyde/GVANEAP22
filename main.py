@@ -94,13 +94,21 @@ class keys: # a class to control all functions to update change and use keybinds
 key_group=keys()
 gui_font = pygame.font.Font(None,30)# sets the UI font and size
 class Button:# a class for holding all button related code and function
+    # text : a string that will be displalyed on the screen
+    # width : a number (int) that denotes the number of pixels wide the button must be
+    # height : a number (int) that denotes the number of pixels high the button must be
+    # x : a number (int) that denotes the number of pixels along the screen the button must be
+    # y : a number (int) that denotes the number of pixels high the button must be
+    # function : a passable reference to a function that can be activated by the code for when the button is pressed
+    # arg : a variabe with no set type that can be used by the function above for various reasons
+    # box : an bool used to controll whether the button will be rendered and interactable
     def __init__(self,text,width,height,x,y,function=None,box=True,arg=None): 
 
         if box==True:
             self.text_colour="#0A0908"
         else:
             self.text_colour="#FFFFFF"
-        self.function=function # if the button on press needs to run a function, it needs to be passed into here
+        self.function=function 
         self.pressed = False # bool to say if the button is pressed
         self.pos=[x,y] # records where it is in the screen (from 0,0)
         self.rect = pygame.Rect([x,y],(width,height))  # creates a pygame rect object
@@ -117,7 +125,7 @@ class Button:# a class for holding all button related code and function
         self.text_surface=gui_font.render(text,True,self.text_colour)
         self.text_rect = self.text_surface.get_rect(center = self.rect.center)
 
-    def draw(self):#draws the button and the text
+    def draw(self):#draws the button and the text and checks if the button is pressed
         if self.box==True:
             pygame.draw.rect(screen,self.colour, self.rect)
         screen.blit(self.text_surface, self.text_rect)
@@ -140,8 +148,8 @@ class Button:# a class for holding all button related code and function
             self.colour = '#40C9A2' # non active colour
             return False
 
-class scene_1_set:
-    def __init__(self) -> None:
+class scene_1_set: # scene 1 
+    def __init__(self):
         self.buttons=[]
     def setup(self):
         self.buttons.append(Button('Simulation',200,40,screen.get_width()//2,screen.get_height()//2-150,box=False))
@@ -158,7 +166,7 @@ class scene_1_set:
             x.draw()
 
 class scene_2_set:
-    def __init__(self) -> None:
+    def __init__(self):
         self.buttons=[]
     def setup(self):
         #group 1
