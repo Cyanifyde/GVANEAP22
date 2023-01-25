@@ -132,7 +132,7 @@ class Button:# a class for holding all button related code and function
         if self.box!=True:
             self.check_click()
 
-    def check_click(self):# cheks if the button is pressed, if it is it returns true and runs a functon
+    def check_click(self):# checks if the button is pressed, if it is it returns true and runs a functon
         mouse_pos = pygame.mouse.get_pos()
         if self.rect.collidepoint(mouse_pos):
             self.colour = '#e5f9e0' # actuve colour
@@ -169,6 +169,8 @@ class scene_2_set:
     def __init__(self):
         self.buttons=[]
     def setup(self):
+        # all "x" variables denote what columns the buttons should be in
+        # all the "y" variables are added or subtracted from to denote what row they shoulbe be in
         #group 1
         x=screen.get_width()//4
         y=screen.get_height()//2-250
