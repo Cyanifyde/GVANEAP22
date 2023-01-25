@@ -103,22 +103,21 @@ class Button:# a class for holding all button related code and function
     # arg : a variabe with no set type that can be used by the function above for various reasons
     # box : an bool used to controll whether the button will be rendered and interactable
     def __init__(self,text,width,height,x,y,function=None,box=True,arg=None): 
-
         if box==True:
-            self.text_colour = "#0A0908"
+            self.text_colour : str = "#0A0908"
         else:
-            self.text_colour = "#FFFFFF"
-        self.function : function = function 
+            self.text_colour : str = "#FFFFFF"
+        self.function : callable = function 
         self.pressed : bool = False # bool to say if the button is pressed
-        self.pos = list : [x,y] # records where it is in the screen (from 0,0)
-        self.rect = pygame.Rect([x,y],(width,height))  # creates a pygame rect object
-        self.rect.center=[x,y]
-        self.colour = '#40C9A2'
-        self.text = text
-        self.text_surface = gui_font.render(text,True,self.text_colour)
-        self.text_rect = self.text_surface.get_rect(center = self.rect.center)
-        self.box=box # a true or false to say whether the button will be rendered or not
-        self.arg=arg # if some details need to be passed int the function, it is done here
+        self.pos : list = [x,y] # records where it is in the screen (from 0,0)
+        self.rect : object = pygame.Rect([x,y],(width,height))  # creates a pygame rect object
+        self.rect.center : list = [x,y]
+        self.colour : str = '#40C9A2'
+        self.text : str = text
+        self.text_surface : object = gui_font.render(text,True,self.text_colour)
+        self.text_rect : object = self.text_surface.get_rect(center = self.rect.center)
+        self.box : bool = box # a true or false to say whether the button will be rendered or not
+        self.arg : str = arg # if some details need to be passed int the function, it is done here
 
     def change_text(self,text):# changes the text on the button
         self.text=text
