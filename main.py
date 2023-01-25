@@ -43,7 +43,7 @@ class person: #person class for holding and controlling all neccessry code for t
         self.coords=[[-1,0],[0,-1],[0,1],[1,0]] # coordinates of all possible movement vectors
         self.home=False
     def dist(self,x,y): # gets the distance between 2 points
-        return (x[0]-y[0])**2+(x[1]-y[1])**2
+        return ((x[0]-y[0])**2)+((x[1]-y[1])**2)
         
     def move(self): #gets the distance from the end to itself and sees what vector from self.coords would be more beneficial
         lowest_dist=self.dist(self.loc,self.dest)
@@ -105,12 +105,12 @@ class Button:# a class for holding all button related code and function
     def __init__(self,text,width,height,x,y,function=None,box=True,arg=None): 
 
         if box==True:
-            self.text_colour="#0A0908"
+            self.text_colour = "#0A0908"
         else:
-            self.text_colour="#FFFFFF"
-        self.function=function 
-        self.pressed = False # bool to say if the button is pressed
-        self.pos=[x,y] # records where it is in the screen (from 0,0)
+            self.text_colour = "#FFFFFF"
+        self.function : function = function 
+        self.pressed : bool = False # bool to say if the button is pressed
+        self.pos = list : [x,y] # records where it is in the screen (from 0,0)
         self.rect = pygame.Rect([x,y],(width,height))  # creates a pygame rect object
         self.rect.center=[x,y]
         self.colour = '#40C9A2'
