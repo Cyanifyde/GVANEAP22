@@ -11,10 +11,10 @@ import time
 import string
 alphabet = list(string.ascii_lowercase)
 
-class people_set: #a class to hold and controll the "person" class
+class people_set: # a class to hold and controll the "person" class
     def __init__(self):
-        self.people_list=[] #a list of all people in existance
-        self.moveing_list=[] #a list of all people currently in motion
+        self.people_list=[] # a list of all people in existance
+        self.moveing_list=[] # a list of all people currently in motion
     def summon_person(self):# function to be called when a person is being created
         x=list(house_list.houses.keys())[random.randint(0,len(house_list.houses)-1)] # picks a random house for their initial house to be set at
         new_p=person(x,len(self.people_list)) #creates the person
@@ -33,7 +33,7 @@ class people_set: #a class to hold and controll the "person" class
                         persons.dest=x
                         running=False
 
-class person: #person class for holding and controlling all neccessry code for them to function
+class person: # person class for holding and controlling all neccessry code for them to function
     def __init__(self,loc,tag):
         self.loc=loc
         self.tag=tag
@@ -45,7 +45,7 @@ class person: #person class for holding and controlling all neccessry code for t
     def dist(self,x,y): # gets the distance between 2 points
         return ((x[0]-y[0])**2)+((x[1]-y[1])**2)
         
-    def move(self): #gets the distance from the end to itself and sees what vector from self.coords would be more beneficial
+    def move(self): # gets the distance from the end to itself and sees what vector from self.coords would be more beneficial
         lowest_dist=self.dist(self.loc,self.dest)
         if lowest_dist==0:
             self.home=True
@@ -58,7 +58,7 @@ class person: #person class for holding and controlling all neccessry code for t
                 lowest=new_loc
         self.loc=lowest
 
-    def draw(self): #draws the circle on the screen
+    def draw(self): # draws the circle on the screen
         pygame.draw.circle(screen, "orange", self.loc, 2, 0)
 
 class keys: # a class to control all functions to update change and use keybinds
@@ -134,7 +134,7 @@ class Button:# a class for holding all button related code and function
     def check_click(self):# checks if the button is pressed, if it is it returns true and runs a functon
         mouse_pos = pygame.mouse.get_pos()
         if self.rect.collidepoint(mouse_pos):
-            self.colour = '#e5f9e0' # actuve colour
+            self.colour = '#e5f9e0' # active colour
             if pygame.mouse.get_pressed()[0]:
                 self.pressed = True
                 return True
@@ -169,7 +169,7 @@ class scene_2_set:
         self.buttons=[]
     def setup(self):
         # all "x" variables denote what columns the buttons should be in
-        # all the "y" variables are added or subtracted from to denote what row they shoulbe be in
+        # all the "y" variables are added or subtracted from to denote what row they should be be in
         #group 1
         x=screen.get_width()//4
         y=screen.get_height()//2-250
@@ -210,7 +210,7 @@ class scene_2_set:
             x.draw()
 
 class scene_3_set:
-
+    # settings scene
     def __init__(self):
         self.buttons=[]
     def setup(self):
@@ -226,6 +226,7 @@ class game_settings():
         self.it=None
 
 def get_keys(object):
+    # function to get next key pressed after it is called
     running=True
     while running:
         for event in pygame.event.get():
@@ -239,9 +240,12 @@ def get_keys(object):
         time.sleep(0.2)
 
 def exit(arg):
+    # a function to quit all code and pygame when the "quit" button is pressed
     pygame.quit()
+    quit()
 
 def change_to_keybinds(arg):
+    #function to change the scene to the keybinds menu
     global scenemain
     scenemain=False
     global scene
@@ -249,6 +253,7 @@ def change_to_keybinds(arg):
     scene.setup()
 
 def change_to_main(arg):
+    #function to change the scene to the main menu
     global scenemain
     scenemain=False
     global scene
@@ -256,6 +261,7 @@ def change_to_main(arg):
     scene.setup()
 
 def change_to_settings(arg):
+    #function to change the scene to the settings menu
     global scenemain
     scenemain=False
     global scene
@@ -263,6 +269,7 @@ def change_to_settings(arg):
     scene.setup()
 
 def change_to_game(arg):
+    #function to change the scene to the game scene
     global scenemain
     scenemain=True
     m=Thread(target=person_loop,daemon=True)
@@ -270,11 +277,11 @@ def change_to_game(arg):
 
 
 def change_text(item):
+    # function to change the text specifically and get the next key pressed on the keybinds scene
     item.change_text("please press a key")
     item.draw()
     m=Thread(target=get_keys(item))
     m.start()
-    m.join()
 
 scene=scene_1_set()
 scene.setup()
@@ -284,14 +291,14 @@ class game:
         objects=[]
 
 class houses:
+    # class to create and hold all houses in the game scene
     def __init__(self) -> None:
         self.houses={}
 
     def create_house(self):
-        m=Thread(target=check_m_col_house)
-        m.start()
-        m.join()
-        if q1.get()==1:
+        # function to create a house
+        if check_m_col_house():
+            #checks if there is a space availiable in that location, if there is, the house will be created and drawn
             house_created=house()
             self.houses[house_created.loc]=house_created
 
@@ -302,13 +309,15 @@ class houses:
 
 import random
 class house:
-    def __init__(self) -> None:
+    # class for a house, holds limited data
+    def __init__(self):
         
         self.loc=pygame.mouse.get_pos()
         self.tag=str(self.loc)
         self.object=pygame.Rect(self.loc,[5,5])
 
 def check_m_col_house():
+    # checks if there is also a house near the location of the mouse when the function is called if there is it returns true
     loc=pygame.mouse.get_pos()
     found=False
     for x in house_list.houses:
@@ -317,8 +326,7 @@ def check_m_col_house():
                 q1.put(house_list.houses[x])
                 found=True
     
-    if found==False:
-        q1.put(1)
+    return found
 
 def check_clicks():
     for x in buttons_game.buttons_house:
@@ -378,10 +386,8 @@ while 1:
                 loc=pygame.mouse.get_pos()
                 m=Thread(target=check_m_col_house)
                 m.start()
-                m.join()
         m=Thread(target=check_clicks)
         m.start()
-        m.join()
         try:
             q1_get=q1.get_nowait()
         except:
