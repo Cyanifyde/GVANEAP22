@@ -5,7 +5,7 @@ pygame.display.set_caption('NEA')
 screen = pygame.display.set_mode([0,0],pygame.FULLSCREEN) #pygame.FULLSCREEN is a flag that allows the game to be put into fullscreen mode
 clock = pygame.time.Clock()
 size=screen.get_size()
-from threading import Thread
+from threading import Thread, Lock
 from queue import Queue
 import time
 import string
@@ -60,6 +60,60 @@ class person: # person class for holding and controlling all neccessry code for 
 
     def draw(self): # draws the circle on the screen
         pygame.draw.circle(screen, "orange", self.loc, 2, 0)
+
+
+class PathFinder:
+    def __init__(self, locations=None):
+        self.locations = [] if locations is None else locations
+        self.paths = {}
+        self.generated_paths = set()
+        self.x_step = 0.5
+        self.path_queue = Queue()
+        self.path_lock = Lock()
+        self.start_thread()
+        
+    def _generate_path(self, start, end):
+        if (start, end) in self.generated_paths or (end, start) in self.generated_paths:
+            return
+        m = (end[1]-start[1])/(end[0]-start[0])
+        c = start[1] - m*start[0]
+        path = []
+        x = start[0]
+        while x <= end[0]:
+            y = m*x + c
+            path.append((x, y))
+            x += self.x_step
+        with self.path_lock:
+            self.paths[(start, end)] = path
+            self.generated_paths.add((start, end))
+        
+    def add_location(self, location):
+        with self.path_lock:
+            self.locations.append(location)
+            for existing_location in self.locations[:-1]:
+                self.path_queue.put((existing_location, location))
+                
+    def remove_location(self, location):
+        with self.path_lock:
+            self.locations.remove(location)
+            for existing_location in self.locations:
+                self.generated_paths.discard((location, existing_location))
+                self.generated_paths.discard((existing_location, location))
+                self.paths.pop((location, existing_location), None)
+                self.paths.pop((existing_location, location), None)
+            
+    def get_path(self, start, end):
+        with self.path_lock:
+            return self.paths.get((start, end), [])
+            
+    def start_thread(self):
+        t = threading.Thread(target=self._run)
+        t.start()
+        
+    def _run(self):
+        while True:
+            start, end = self.path_queue.get()
+            self._generate_path(start, end)
 
 class keys: # a class to control all functions to update change and use keybinds
     def __init__(self):
