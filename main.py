@@ -72,7 +72,7 @@ class PathFinder:
         self.path_lock = Lock()
         self.start_thread()
         
-    def _generate_path(self, start, end):
+    def generate_path(self, start, end):
         if (start, end) in self.generated_paths or (end, start) in self.generated_paths:
             return
         m = (end[1]-start[1])/(end[0]-start[0])
@@ -107,13 +107,14 @@ class PathFinder:
             return self.paths.get((start, end), [])
             
     def start_thread(self):
-        t = threading.Thread(target=self._run)
+        t = threading.Thread(target=self.run)
         t.start()
         
-    def _run(self):
+    def run(self):
         while True:
             start, end = self.path_queue.get()
-            self._generate_path(start, end)
+            self.generate_path(start, end)
+            time.sleep(0.1)
 
 class keys: # a class to control all functions to update change and use keybinds
     def __init__(self):
